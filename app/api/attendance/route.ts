@@ -1,10 +1,8 @@
-import { NextResponse } from "next/server"
 import { verifyAuth } from "@/lib/auth"
-import { connectDB } from "@/lib/mongodb"
 import Attendance from "@/lib/models/Attendance"
-import Member from "@/lib/models/Member"
-import { GYM_CONFIG } from "@/lib/config"
+import { connectDB } from "@/lib/mongodb"
 import mongoose from "mongoose"
+import { NextResponse } from "next/server"
 
 // Get attendance records
 export async function GET(request: Request) {
@@ -77,13 +75,7 @@ export async function HEAD(request: Request) {
 
     await connectDB()
 
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
-    const endOfDay = new Date()
-    endOfDay.setHours(23, 59, 59, 999)
-
     const currentlyInside = await Attendance.countDocuments({
-      date: { $gte: today, $lte: endOfDay },
       checkOutTime: null,
     })
 

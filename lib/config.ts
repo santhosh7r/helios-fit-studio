@@ -12,12 +12,15 @@ export const GYM_CONFIG = {
     address: "123 Fitness Street, Gym City",
   },
 
+  // Timezone
+  timezone: "Asia/Kolkata",
+
   // Session Timings (24-hour format)
   sessions: {
     morning: {
       name: "Morning",
       start: "05:00",
-      end: "01:30",
+      end: "13:30",
     },
     evening: {
       name: "Evening",
@@ -63,8 +66,15 @@ export const GYM_CONFIG = {
 
 // Helper to get current session
 export function getCurrentSession(config: any = GYM_CONFIG): "morning" | "evening" | "continuous" | "full-day" | null {
+  const timeZone = config.timezone || "Asia/Kolkata";
+  
+  // Get current time in gym's timezone
   const now = new Date();
-  const currentTime = now.getHours() * 60 + now.getMinutes();
+  // Using en-GB for HH:MM:SS 24-hour format
+  const timeString = now.toLocaleTimeString("en-GB", { timeZone, hour12: false });
+  const [currentHours, currentMinutes] = timeString.split(":").map(Number);
+  
+  const currentTime = currentHours * 60 + currentMinutes;
   const mode = config.operatingMode || "sessions";
 
   if (mode === "24hours") {

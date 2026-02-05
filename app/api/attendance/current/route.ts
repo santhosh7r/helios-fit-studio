@@ -1,7 +1,8 @@
-import { NextResponse } from "next/server"
-import { verifyAuth } from "@/lib/auth"
-import { connectDB } from "@/lib/mongodb"
-import Attendance from "@/lib/models/Attendance"
+import { verifyAuth } from "@/lib/auth";
+import Attendance from "@/lib/models/Attendance";
+import "@/lib/models/Member"; // Ensure Member model is registered
+import { connectDB } from "@/lib/mongodb";
+import { NextResponse } from "next/server";
 
 // Get members currently in the gym
 export async function GET(request: Request) {
@@ -13,13 +14,10 @@ export async function GET(request: Request) {
 
     await connectDB()
 
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
-    const endOfDay = new Date()
-    endOfDay.setHours(23, 59, 59, 999)
+    await connectDB()
 
+    // Find all members who haven't checked out
     const currentlyInside = await Attendance.find({
-      date: { $gte: today, $lte: endOfDay },
       checkOutTime: null,
     })
       .populate("member", "fullName registrationNumber phone")
