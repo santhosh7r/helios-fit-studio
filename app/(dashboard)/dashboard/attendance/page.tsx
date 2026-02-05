@@ -119,12 +119,12 @@ export default function AttendancePage() {
                 <Link
                   key={record._id}
                   href={`/dashboard/members/${record.member._id}`}
-                  className="flex items-center justify-between p-4 hover:bg-muted/50 transition-colors"
+                  className="flex flex-col sm:flex-row sm:items-center justify-between p-4 hover:bg-muted/50 transition-colors gap-2"
                 >
                   <div>
                     <span className="font-medium">{record.member.fullName}</span>
                     <span className="text-sm text-muted-foreground ml-2">
-                      ({record.member.registrationNumber})
+                       ({record.member.registrationNumber})
                     </span>
                   </div>
                   <div className="flex items-center gap-2 text-sm">
@@ -193,7 +193,7 @@ export default function AttendancePage() {
                 <Link
                   key={record._id}
                   href={`/dashboard/members/${record.member._id}`}
-                  className="flex items-center justify-between p-4 hover:bg-muted/50 transition-colors"
+                  className="flex flex-col sm:flex-row sm:items-center justify-between p-4 hover:bg-muted/50 transition-colors gap-2"
                 >
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
@@ -204,8 +204,8 @@ export default function AttendancePage() {
                     </div>
                     <p className="text-sm text-muted-foreground">{record.member.phone}</p>
                   </div>
-                  <div className="text-right">
-                    <Badge variant="secondary" className="capitalize mb-1">
+                  <div className="text-left sm:text-right">
+                    <Badge variant="secondary" className="capitalize mb-1 mr-2 sm:mr-0">
                       {record.session}
                     </Badge>
                     <div className="flex items-center gap-3 text-sm">

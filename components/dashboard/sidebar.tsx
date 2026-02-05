@@ -111,7 +111,7 @@ export function Sidebar() {
 
       {/* Mobile bottom navigation */}
       <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-background border-t flex justify-around py-2">
-        {navigation.slice(0, 5).map((item) => {
+        {navigation.filter(item => item.name !== "Settings").map((item) => {
           const isActive =
             item.href === "/dashboard"
               ? pathname === "/dashboard"
