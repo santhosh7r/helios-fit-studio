@@ -2,16 +2,16 @@
 
 import React from "react"
 
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
-import { useAuth } from "@/lib/auth-context"
-import { GYM_CONFIG } from "@/lib/config"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Loader2, Dumbbell, AlertCircle } from "lucide-react"
+import { useAuth } from "@/lib/auth-context"
+import { GYM_CONFIG } from "@/lib/config"
+import { AlertCircle, Dumbbell, Loader2 } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
 
 export default function LoginPage() {
   const [username, setUsername] = useState("")
@@ -22,6 +22,19 @@ export default function LoginPage() {
   
   const { login, user, isLoading } = useAuth()
   const router = useRouter()
+
+  const [config, setConfig] = useState(GYM_CONFIG)
+
+  useEffect(() => {
+    fetch("/api/config")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.data) {
+          setConfig(data.data)
+        }
+      })
+      .catch((err) => console.error("Failed to load config", err))
+  }, [])
 
   useEffect(() => {
     // Check if setup is required
@@ -74,12 +87,22 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-muted/30 p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center space-y-4">
-          <div className="mx-auto w-16 h-16 bg-primary rounded-full flex items-center justify-center">
-            <Dumbbell className="h-8 w-8 text-primary-foreground" />
+          <div className="mx-auto w-24 h-24 flex items-center justify-center">
+            {(config as any).logo ? (
+              <img 
+                src={(config as any).logo} 
+                alt="Logo" 
+                className="w-full h-full object-contain"
+              />
+            ) : (
+              <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center">
+                <Dumbbell className="h-8 w-8 text-primary-foreground" />
+              </div>
+            )}
           </div>
           <div>
-            <CardTitle className="text-2xl font-bold">{GYM_CONFIG.name}</CardTitle>
-            <CardDescription className="mt-1">{GYM_CONFIG.tagline}</CardDescription>
+            <CardTitle className="text-2xl font-bold">{config.name}</CardTitle>
+            <CardDescription className="mt-1">{config.tagline}</CardDescription>
           </div>
         </CardHeader>
         <CardContent>
