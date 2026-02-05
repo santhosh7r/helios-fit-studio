@@ -105,9 +105,15 @@ export async function POST(request: Request) {
       )
     }
 
-    // Get today's date (normalized to start of day)
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
+    // Get today's date (normalized to start of day in Gym Timezone)
+    // Uses Gym time (default Asia/Kolkata) to determine "Today"
+    const timeZone = (config as any)?.timezone || "Asia/Kolkata"
+    const now = new Date()
+    // Get YYYY-MM-DD in Gym Timezone
+    const localDateStr = now.toLocaleDateString("en-CA", { timeZone })
+    // Create Date object for that YYYY-MM-DD (UTC Midnight)
+    // This ensures that 1AM IST sits in the correct "Day" bucket
+    const today = new Date(localDateStr)
 
     // Check today's attendance for this member
     const todayRecords = await Attendance.find({
