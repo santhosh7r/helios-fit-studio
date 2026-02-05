@@ -1,4 +1,5 @@
 import { verifyAuth } from "@/lib/auth"
+import { GYM_CONFIG } from "@/lib/config"
 import Attendance from "@/lib/models/Attendance"
 import Member from "@/lib/models/Member"
 import Payment from "@/lib/models/Payment"
@@ -14,12 +15,14 @@ export async function GET(request: Request) {
 
     await connectDB()
 
+    const timeZone = GYM_CONFIG.timezone || "Asia/Kolkata"
     const now = new Date()
     
-    // Today's date range
-    const todayStart = new Date(now)
-    todayStart.setHours(0, 0, 0, 0)
-    const todayEnd = new Date(now)
+    // Today's date range (Timezone Aware)
+    const localDateStr = now.toLocaleDateString("en-CA", { timeZone })
+    const todayStart = new Date(localDateStr)
+
+    const todayEnd = new Date(todayStart)
     todayEnd.setHours(23, 59, 59, 999)
 
     // This week's date range
@@ -77,7 +80,6 @@ export async function GET(request: Request) {
       
       // Currently in gym
       Attendance.countDocuments({
-        date: { $gte: todayStart, $lte: todayEnd },
         checkOutTime: null,
       }),
       
